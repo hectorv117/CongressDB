@@ -61,6 +61,7 @@ app.post('/search-congress-member', (req, res) => {
         }
         console.log('Users fetched:', rows);
         res.status(200).json(rows);
+        updateSection(rows);
     });
 })
 
@@ -116,4 +117,46 @@ connection.query('SELECT * FROM members', (err, rows) => {
     }
     console.log('Selected records:', rows);
 });
+
+
+function updateSection (rows) {
+    const resultsSection = document.getElementById("results-section");
+
+    form.addEventListener("submit", function(event) {
+        event.preventDefault(); // Prevent the default form submission behavior
+
+        // Clear previous results
+        resultsSection.innerHTML = "";
+
+        // Create table element
+        const table = document.createElement("table");
+        table.classList.add("bill-table");
+
+        // Create table header row
+        const headerRow = document.createElement("tr");
+        const headers = ["Congress ID", "Name", "Party", "State"];
+        headers.forEach(headerText => {
+            const th = document.createElement("th");
+            th.textContent = headerText;
+            headerRow.appendChild(th);
+        });
+        table.appendChild(headerRow);
+
+        // Create table body rows with sample bills data
+        rows.forEach(member => {
+            const row = document.createElement("tr");
+            Object.values(member).forEach(value => {
+                const cell = document.createElement("td");
+                cell.textContent = value;
+                row.appendChild(cell);
+            });
+            table.appendChild(row);
+        });
+
+        // Append table to results section
+        resultsSection.appendChild(table);
+    });
+
+}
+
 
