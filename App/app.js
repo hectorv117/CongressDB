@@ -82,11 +82,11 @@ app.post('/update-congress-member', (req, res) => {
 
 // endpoint to get congress member id to delete (DELETE)
 app.post('/delete-congress-member', (req, res) => {
-    const memberID = req.body.delete_id;
+    const memberID = req.body.id;
     console.log("got the id: ", memberID);
 // now that we have user input build sql query and send it to db
         //  here .....
-    const sql = `DELETE * FROM members WHERE MEMBERID == ?`
+    const sql = `DELETE FROM members WHERE MEMBERID = ?`
     connection.query(sql, [memberID], (err, result) => {
         if (err) {
             console.error('Error deleting user:', err);
@@ -94,7 +94,7 @@ app.post('/delete-congress-member', (req, res) => {
             return;
         }
         console.log('User deleted:', result);
-        res.status(200).json({ message: 'User created successfully' });
+        res.status(200).json({ message: 'User delete successfully' });
         connection.end();
 
     });
