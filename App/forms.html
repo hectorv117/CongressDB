@@ -11,6 +11,8 @@
     <!-- Form to insert a new Congress member -->
     <h2>Add New Congress Member</h2>
     <form action="/add-congress-member" method="POST" id="add-member-form">
+        <label for="memberid">Member ID:</label>
+        <input type="text" id="memberid" name="memberid" required><br>
         <label for="name">Name:</label>
         <input type="text" id="name" name="name" required><br>
         <label for="party">Party:</label>
@@ -23,7 +25,7 @@
     <!-- Form to search for a specific Congress member -->
     <h2>Search Congress Member</h2>
     <form action="/search-congress-member" method="POST" id="search-member-form">
-        <label for="search-name">Search by Name:</label>
+        <label for="name">Search by Name:</label>
         <input type="text" id="name" name="name">
         <button type="submit">Search</button>
     </form>

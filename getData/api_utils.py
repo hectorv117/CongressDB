@@ -21,10 +21,10 @@ def get_json_data(url):
 
 def write_to_csv(json_data, selected_keys, csv_filename, new_field_names):
     try:
-        with open(csv_filename, mode='w', newline='') as csvfile:
+        with open(csv_filename, mode='a', newline='') as csvfile:
             fieldnames = selected_keys
             writer = csv.DictWriter(csvfile, fieldnames=new_field_names)
-            writer.writeheader()
+           # writer.writeheader()
 
             for entry in json_data:
                 filtered_entry = {key: entry[key] for key in selected_keys if key in entry}

@@ -9,7 +9,7 @@ var connection = mysql.createConnection({
     host     : 'congressdb.c7gkeec48xwe.us-east-2.rds.amazonaws.com',
     user     : 'admin',
     password : 'ForTheClass',
-    // port     : 3306, //this might need to be an integer double check
+    port     : 3306, //this might need to be an integer double check
     database : 'Congress'
 });
 
@@ -33,21 +33,35 @@ app.get('/', (req, res) => {
 
 // get info to create/insert new congress member to db (CREATE)
 app.post('/add-congress-member', (req, res) => {
-    const name = req.body.name;
-    const party = req.body.party;
-    const state = req.body.state;
-    console.log(name);
-    // now that we have user input build sql query and send it to db
-        //  here .....
+    const { memberid, name, party, state } = req.body;
+    const sql = `INSERT INTO members (MEMBERID, NAME, PARTY, STATE) VALUES (?, ?, ?, ?)`;
+    connection.query(sql, [memberid, name, party, state], (err, result) => {
+        if (err) {
+            console.error('Error creating user:', err);
+            res.status(500).json({ error: 'Internal server error' });
+            return;
+        }
+        console.log('User created:', result);
+        res.status(200).json({ message: 'User created successfully' });
+        connection.end();
+
+    });
 });
 
 // endpoint to get congress member name to be searched for (READ)
 app.post('/search-congress-member', (req, res) => {
-    const name = req.body.name;
-    console.log("got the name: ", name);
-
-    // now that we have user input build sql query and send it to db
-        //  here .....
+    const { name } = req.body
+    console.log(req.body); 
+    const sql = `SELECT * FROM members WHERE NAME == ?`;
+    connection.query(sql, [name], (err, rows) => {
+        if (err) {
+            console.error('Error fetching users:', err);
+            res.status(500).json({ error: 'Internal server error' });
+            return;
+        }
+        console.log('Users fetched:', rows);
+        res.status(200).json(rows);
+    });
 })
 
 // Endpoint to get new congressmember info to update (UPDATE)
@@ -91,4 +105,3 @@ connection.query('SELECT * FROM members', (err, rows) => {
     console.log('Selected records:', rows);
 });
 
-connection.end();
