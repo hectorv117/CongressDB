@@ -52,7 +52,7 @@ app.post('/add-congress-member', (req, res) => {
 app.post('/search-congress-member', (req, res) => {
     const { name } = req.body
     console.log(req.body); 
-    const sql = `SELECT * FROM members WHERE NAME == ?`;
+    const sql = `SELECT * FROM members WHERE NAME = ?`;
     connection.query(sql, [name], (err, rows) => {
         if (err) {
             console.error('Error fetching users:', err);
@@ -66,19 +66,18 @@ app.post('/search-congress-member', (req, res) => {
 
 // Endpoint to get new congressmember info to update (UPDATE)
 app.post('/update-congress-member', (req, res) => {
-    const memberID = req.body.id;
-    const name = req.body.name
-    const update = req.body.update
-    const state = req.body.state
-
-
-    console.log("got new congress member info: ");
-    console.log(name);
-    console.log(update);
-    console.log(state);
-
-    // now that we have user input build sql query and send it to db
-        //  here .....
+    const userId = req.params.id;
+    const { id, name, party, state } = req.body;
+    const sql = `UPDATE members SET MEMBERID=?, NAME=?, PARTY=?, STATE=? WHERE MEMBERID=?`;
+    connection.query(sql, [id, name, party, state, id], (err, result) => {
+        if (err) {
+            console.error('Error updating user:', err);
+            res.status(500).json({ error: 'Internal server error' });
+            return;
+        }
+        console.log('User updated:', result);
+        res.status(200).json({ message: 'User updated successfully' });
+    });
     })
 
 // endpoint to get congress member id to delete (DELETE)
