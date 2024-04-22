@@ -24,11 +24,40 @@
 
     <!-- Form to search for a specific Congress member -->
     <h2>Search Congress Member</h2>
-    <form action="/search-congress-member" method="POST" id="search-member-form">
-        <label for="name">Search by Name:</label>
-        <input type="text" id="name" name="name">
+    <form id="search-member-form">
+        <label for="search_name">Search by Name:</label>
+        <input type="text" id="search_name" name="search_name">
         <button type="submit">Search</button>
     </form>
+
+
+    <script>
+        document.getElementById('search-member-form').addEventListener('submit', (event) => {
+            event.preventDefault();
+            const name = document.getElementById('search_name').value;
+            console.log('in html js script got name: ', name);
+            fetch('/search-congress-member', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ name })
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Update HTML with search results
+                console.log(data);
+                const resultsDiv = document.getElementById('search-results');
+                resultsDiv.innerHTML = '';
+                data.forEach(member => {
+                    const memberDiv = document.createElement('div');
+                    memberDiv.textContent = `ID: ${member.MEMBERID}, Name: ${member.NAME}, Party: ${member.PARTY}, State: ${member.STATE}`;
+                    resultsDiv.appendChild(memberDiv);
+                });
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    </script>
 
     <!-- Form to delete a Congress member by ID -->
     <h2>Delete Congress Member</h2>
@@ -60,7 +89,7 @@
     <!-- Display area for CRUD operation status messages -->
     <div id="status-messages"></div>
 
-    <!-- JavaScript to handle form submissions and AJAX requests -->
-    <script src="scripts.js"></script>
+    <!-- JavaScript to handle form submissions and AJAX requests
+    <script src="scripts.js"></script> -->
 </body>
 </html>
